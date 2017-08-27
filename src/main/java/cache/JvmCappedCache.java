@@ -68,6 +68,7 @@ public class JvmCappedCache implements CacheProvider{
      * in the local cache that lives
      * in the JVM.
      */
+    // FIXME: Replace with actual hashing algorithm and provide implementation outside of this class.
     private synchronized String getShortUrl(String longUrl){
         StringBuilder builder = new StringBuilder("http://urlshortener/");
         builder.append(System.currentTimeMillis());
