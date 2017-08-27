@@ -40,6 +40,7 @@ public class JvmCappedCache implements CacheProvider{
         if(this.capSize > 0){
             // TODO: replace with custom hashing algorithm
             this.cacheMap.put(shortUrl, longUrl);
+            --this.capSize;
         }
         else{
             // Evict last element and insert new at the beginning
