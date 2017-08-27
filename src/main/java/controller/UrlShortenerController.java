@@ -6,12 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.xml.ws.Response;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -22,18 +18,19 @@ import java.util.Optional;
  * and retrieving shortened urls
  */
 @RestController
-@RequestMapping("shorten")
+@RequestMapping("/shorten")
+@EnableSwagger2
 public class UrlShortenerController {
 
     private Logger log = LoggerFactory.getLogger(UrlShortenerController.class);
 
-    @RequestMapping(value = "{longUrl}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/getshort", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> generateShortUrl(
-            @PathVariable(name = "{longUrl}") String longUrl) {
+            @RequestHeader(name = "longurl") String longUrl) {
         if (longUrl == null || longUrl.length() < 1) {
             throw new IllegalArgumentException("long-url provided cannot be null or empty");
         }
-        // FIXME: Use custom hasing algorithm rather than this simple timestamp based approach
+        // FIXME: Use custom hashing algorithm rather than this simple timestamp based approach
         // TODO: Use an actual in memory database store rather than this simple JVM based map
 
         JvmCappedCache instance = JvmCappedCache.getInstance();
@@ -43,9 +40,9 @@ public class UrlShortenerController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "{shortUrl}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/getlong", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> generateLongUrl(
-            @PathVariable(name = "{shortUrl}") String shortUrl) {
+            @RequestHeader(name = "shorturl") String shortUrl) {
         if (shortUrl == null || shortUrl.length() < 1) {
             throw new IllegalArgumentException("long-url provided cannot be null or empty");
         }
