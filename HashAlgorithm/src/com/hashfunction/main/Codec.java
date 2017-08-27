@@ -2,41 +2,52 @@ package com.hashfunction.main;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.Random;
 
 import javax.xml.bind.DatatypeConverter;
 
 public class Codec {
 		    
-	    HashMap<String,String> hashmap = new HashMap<String, String>();
+	    HashMap<String,String> hashmap = new HashMap<>();
 	    int encNumber;
-	    String url_string = "1";
+	    StringBuilder url_string = new StringBuilder();
 	    String url_hex;
 	    // Encodes a URL to a shortened URL.
 	    public String encode(String longUrl) {
 	        char aRR[] = longUrl.toCharArray();
-	        for(int i=0;i<aRR.length-1;i++){
+	        for(int i=0;i<aRR.length;i++){
 	            encNumber = (int)aRR[i];
-	            //System.out.println(encNumber);
-	            url_string.concat(Integer.toString(encNumber));
+	            //	System.out.println(encNumber);
+	            url_string.append(Integer.toString(encNumber));
+	           // System.out.println(url_string.toString());
 	                      }
-	       byte[] myBytes = null;
+	       byte[] myBytes = new byte[128];
 		try {
-			myBytes = url_string.getBytes("UTF-8");
+			myBytes = url_string.toString().getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 	       url_hex = DatatypeConverter.printHexBinary(myBytes);
-	        hashmap.put(url_hex,longUrl);
-	        return url_hex;
+	       char [] url_hex_array = url_hex.toCharArray();
+	       long sum =0;
+	       for (int j=0;j<url_hex_array.length;j++)
+	       {
+	    	   sum = sum + Character.getNumericValue(url_hex_array[j]);
+	       }
+	       
+	       
+	        hashmap.put(Long.toString(sum),longUrl);
+	        	        return Long.toString(sum);
 	    }
 
 	    // Decodes a shortened URL to its original URL.
 	    public String decode(String shortUrl) {
 	        return hashmap.get(shortUrl);
 	    }
-	
-
+	      
+ 
 	// Your Codec object will be instantiated and called as such:
 	// Codec codec = new Codec();
 	// codec.decode(codec.encode(url));
@@ -44,7 +55,7 @@ public class Codec {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Codec codec = new Codec();
-		System.out.println(codec.encode("manjunathmanikumar.com"));
+		System.out.println(codec.encode("manjunath.manikumar"));
 
 	}
 
