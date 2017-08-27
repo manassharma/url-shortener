@@ -62,6 +62,12 @@ public class JvmCappedCache implements CacheProvider{
         return Optional.ofNullable(this.cacheMap.get(shortUrl));
     }
 
+    /**
+     * @param longUrl
+     * @return Shorter url if found
+     * in the local cache that lives
+     * in the JVM.
+     */
     private synchronized String getShortUrl(String longUrl){
         StringBuilder builder = new StringBuilder("http://urlshortener/");
         builder.append(System.currentTimeMillis());
